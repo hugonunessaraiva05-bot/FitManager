@@ -18,3 +18,19 @@ Relatorio tecnico: [RELATORIO.md](./RELATORIO.md)
 - Encapsulamento com atributos privados e polimorfismo em `mostrarInfo()`.
 - Interface responsiva com dashboard operacional, painel de clientes, planos e financeiro.
 - Reset de demo para voltar rapidamente ao estado inicial.
+## Autor
+Hugo Nunes
+
+## Curso
+Licenciatura em Informática
+
+## Projeto
+Sistema de Gestão de Ginásio - FitManager
+
+## Tecnologias Utilizadas
+- HTML
+- CSS
+- JavaScript
+
+## Estado do Projeto
+Projeto académico em desenvolvimento.
