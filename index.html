@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FitManager - Sistema de Gestao de Ginasio</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="ambient ambient-left"></div>
+  <div class="ambient ambient-right"></div>
+
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="brand-block">
+        <div class="brand-mark" aria-hidden="true">
+          <span>FM</span>
+        </div>
+        <p class="eyebrow">Sistema de Gestao de Ginasio</p>
+        <h1>FitManager</h1>
+        <p class="brand-copy">
+          Clientes, instrutores, planos de treino e faturacao num cockpit unico, claro e orientado a execucao.
+        </p>
+      </div>
+
+      <nav class="nav-stack" aria-label="Navegacao principal">
+        <button class="nav-link is-active" data-section-target="dashboard">
+          <span class="nav-label">Dashboard</span>
+          <span class="nav-meta">Operacao, receita e alertas</span>
+        </button>
+        <button class="nav-link" data-section-target="clients">
+          <span class="nav-label">Clientes</span>
+          <span class="nav-meta">Pesquisa, detalhe e plano associado</span>
+        </button>
+        <button class="nav-link" data-section-target="plans">
+          <span class="nav-label">Planos de treino</span>
+          <span class="nav-meta">Templates, exercicios e estrutura</span>
+        </button>
+        <button class="nav-link" data-section-target="finance">
+          <span class="nav-label">Financeiro</span>
+          <span class="nav-meta">Pagamentos e mensalidades em atraso</span>
+        </button>
+        <button class="nav-link" data-section-target="instructors">
+          <span class="nav-label">Instrutores</span>
+          <span class="nav-meta">Especialidades e carteira de clientes</span>
+        </button>
+      </nav>
+
+      <section class="sidebar-panel">
+        <div class="panel-head compact">
+          <div>
+            <p class="eyebrow">Hoje</p>
+            <h2 id="sidebar-date">--</h2>
+          </div>
+          <span class="status-pill live">Online</span>
+        </div>
+
+        <div class="sidebar-kpis">
+          <article class="mini-card">
+            <span>Total recebido</span>
+            <strong id="mini-total-received">EUR 0</strong>
+          </article>
+          <article class="mini-card">
+            <span>Em atraso</span>
+            <strong id="mini-overdue-count">0</strong>
+          </article>
+        </div>
+
+        <button class="secondary-button full" id="reset-demo-button" type="button">
+          Repor dados demo
+        </button>
+      </section>
+    </aside>
+
+    <div class="main-shell">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">Plataforma profissional de gestao</p>
+          <h2 class="topbar-title">FitManager</h2>
+          <p class="topbar-copy">
+            Um sistema de gestao de ginasio com melhor uso de POO, foco em produtividade e uma experiencia clara para a operacao diaria.
+          </p>
+        </div>
+
+        <div class="topbar-actions">
+          <button class="ghost-button" id="btnExportarDados" type="button">
+            Exportar dados
+          </button>
+          <button class="ghost-button" id="btnRegistarPagamento" data-open-dialog="payment-dialog" type="button">
+            Registar pagamento
+          </button>
+          <button class="ghost-button" id="btnAdicionarExercicio" data-open-dialog="exercise-dialog" type="button">
+            Adicionar exercicio
+          </button>
+          <button class="secondary-button" id="btnNovoPlano" data-open-dialog="plan-dialog" type="button">
+            Novo plano
+          </button>
+          <button class="secondary-button" id="btnNovoInstrutor" data-open-dialog="instructor-dialog" type="button">
+            Novo instrutor
+          </button>
+          <button class="primary-button" id="btnNovoCliente" data-open-dialog="client-dialog" type="button">
+            Novo cliente
+          </button>
+        </div>
+      </header>
+
+      <main class="content-shell">
+        <section class="section-panel is-visible" id="dashboard-section" aria-labelledby="dashboard-heading">
+          <div class="hero-card">
+            <div>
+              <p class="eyebrow">Painel executivo</p>
+              <h3 id="dashboard-heading">Treino, relacao com clientes e receita no mesmo fluxo</h3>
+              <p class="hero-copy" id="hero-copy">--</p>
+            </div>
+            <div class="hero-tags" id="hero-tags"></div>
+          </div>
+
+          <div class="stats-grid" id="stats-grid"></div>
+
+          <div class="dashboard-grid fit-grid">
+            <section class="panel-card">
+              <div class="panel-head">
+                <div>
+                  <p class="eyebrow">Prioridade financeira</p>
+                  <h3>Clientes em atraso</h3>
+                </div>
+              </div>
+              <div class="stack-list" id="dashboard-overdue-list"></div>
+            </section>
+
+            <section class="panel-card">
+              <div class="panel-head">
+                <div>
+                  <p class="eyebrow">Entrada de caixa</p>
+                  <h3>Pagamentos recentes</h3>
+                </div>
+              </div>
+              <div class="stack-list" id="dashboard-payments-list"></div>
+            </section>
+
+            <section class="panel-card">
+              <div class="panel-head">
+                <div>
+                  <p class="eyebrow">Uso dos templates</p>
+                  <h3>Planos mais associados</h3>
+                </div>
+              </div>
+              <div class="stack-list" id="dashboard-plans-list"></div>
+            </section>
+          </div>
+        </section>
+
+        <section class="section-panel" id="clients-section" aria-labelledby="clients-heading">
+          <div class="section-head">
+            <div>
+              <p class="eyebrow">Relacao com clientes</p>
+              <h3 id="clients-heading">Base de clientes</h3>
+            </div>
+
+            <div class="filter-row">
+              <label class="field">
+                <span>Pesquisar cliente pelo nome</span>
+                <input id="client-search-input" type="search" placeholder="Ex.: Ana, Bruno, Carla...">
+              </label>
+              <label class="field">
+                <span>Estado</span>
+                <select id="client-status-filter">
+                  <option value="all">Todos</option>
+                  <option value="overdue">Em atraso</option>
+                  <option value="alert">A vencer</option>
+                  <option value="current">Em dia</option>
+                  <option value="no-plan">Sem plano</option>
+                </select>
+              </label>
+              <label class="field">
+                <span>Instrutor</span>
+                <select id="client-instructor-filter">
+                  <option value="all">Todos</option>
+                </select>
+              </label>
+            </div>
+          </div>
+
+          <div class="split-layout clients-layout">
+            <section class="panel-card">
+              <div class="panel-head">
+                <div>
+                  <p class="eyebrow">Diretorio</p>
+                  <h3 id="clients-count">0 clientes</h3>
+                </div>
+              </div>
+
+              <div class="table-wrap">
+                <table class="data-table">
+                  <thead>
+                    <tr>
+                      <th>Cliente</th>
+                      <th>Plano</th>
+                      <th>Instrutor</th>
+                      <th>Mensalidade</th>
+                      <th>Vencimento</th>
+                    </tr>
+                  </thead>
+                  <tbody id="clients-table-body"></tbody>
+                </table>
+              </div>
+            </section>
+
+            <aside class="panel-card sticky-panel" id="client-detail-panel">
+              <div class="empty-state">
+                <p class="eyebrow">Detalhe</p>
+                <h3>Seleciona um cliente</h3>
+                <p>
+                  Aqui mostramos o metodo mostrarInfo() polimorfico, o plano composto por exercicios e a associacao de plano ao cliente.
+                </p>
+              </div>
+            </aside>
+          </div>
+        </section>
+
+        <section class="section-panel" id="plans-section" aria-labelledby="plans-heading">
+          <div class="section-head">
+            <div>
+              <p class="eyebrow">POO aplicada ao treino</p>
+              <h3 id="plans-heading">Planos de treino</h3>
+            </div>
+            <div class="metric-strip" id="plans-metric-strip"></div>
+          </div>
+
+          <div class="plans-grid" id="plans-grid"></div>
+        </section>
+
+        <section class="section-panel" id="finance-section" aria-labelledby="finance-heading">
+          <div class="section-head">
+            <div>
+              <p class="eyebrow">Controlo financeiro</p>
+              <h3 id="finance-heading">Pagamentos e mensalidades</h3>
+            </div>
+          </div>
+
+          <div class="stats-grid" id="finance-stats-grid"></div>
+
+          <div class="split-layout finance-layout">
+            <section class="panel-card">
+              <div class="panel-head">
+                <div>
+                  <p class="eyebrow">Historico</p>
+                  <h3>Pagamentos registados</h3>
+                </div>
+              </div>
+
+              <div class="table-wrap">
+                <table class="data-table">
+                  <thead>
+                    <tr>
+                      <th>Cliente</th>
+                      <th>Metodo</th>
+                      <th>Valor</th>
+                      <th>Vencimento</th>
+                      <th>Pago em</th>
+                      <th>Estado</th>
+                      <th>Acao</th>
+                    </tr>
+                  </thead>
+                  <tbody id="payments-table-body"></tbody>
+                </table>
+              </div>
+            </section>
+
+            <aside class="panel-card finance-side">
+              <div class="panel-head">
+                <div>
+                  <p class="eyebrow">Acompanhar agora</p>
+                  <h3>Mensalidades em atraso</h3>
+                </div>
+              </div>
+              <div class="stack-list" id="finance-overdue-list"></div>
+            </aside>
+          </div>
+        </section>
+
+        <section class="section-panel" id="instructors-section" aria-labelledby="instructors-heading">
+          <div class="section-head">
+            <div>
+              <p class="eyebrow">Equipa tecnica</p>
+              <h3 id="instructors-heading">Instrutores</h3>
+            </div>
+          </div>
+
+          <div class="trainers-grid" id="instructors-grid"></div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <dialog class="modal" id="client-dialog">
+    <form class="modal-form" id="client-form" method="dialog">
+      <div class="modal-head">
+        <div>
+          <p class="eyebrow">Novo cliente</p>
+          <h3>Registar cliente</h3>
+        </div>
+        <button class="icon-button" data-close-dialog="client-dialog" type="button">Fechar</button>
+      </div>
+
+      <div class="form-grid">
+        <label class="field">
+          <span>Nome</span>
+          <input name="nome" type="text" required>
+        </label>
+        <label class="field">
+          <span>Email</span>
+          <input name="email" type="email" required>
+        </label>
+        <label class="field">
+          <span>Telefone</span>
+          <input name="telefone" type="tel" required>
+        </label>
+        <label class="field">
+          <span>Objetivo</span>
+          <input name="objetivo" type="text" placeholder="Hipertrofia, emagrecimento, mobilidade..." required>
+        </label>
+        <label class="field">
+          <span>Mensalidade</span>
+          <input id="client-monthly-fee-input" name="mensalidade" type="number" min="1" step="0.01" required>
+        </label>
+        <label class="field">
+          <span>Proximo vencimento</span>
+          <input name="proximoVencimento" type="date" required>
+        </label>
+        <label class="field">
+          <span>Instrutor</span>
+          <select name="instrutorId" id="client-instructor-select" required></select>
+        </label>
+        <label class="field">
+          <span>Plano inicial</span>
+          <select name="planoId" id="client-plan-select"></select>
+        </label>
+        <label class="field">
+          <span>Data de inscricao</span>
+          <input name="dataInscricao" type="date" required>
+        </label>
+        <label class="field field-full">
+          <span>Notas</span>
+          <textarea name="notas" rows="3" placeholder="Preferencias, restricoes, observacoes do onboarding..."></textarea>
+        </label>
+      </div>
+
+      <div class="modal-actions">
+        <button class="ghost-button" data-close-dialog="client-dialog" type="button">Cancelar</button>
+        <button class="primary-button" type="submit">Guardar cliente</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog class="modal" id="instructor-dialog">
+    <form class="modal-form" id="instructor-form" method="dialog">
+      <div class="modal-head">
+        <div>
+          <p class="eyebrow">Nova entrada</p>
+          <h3>Registar instrutor</h3>
+        </div>
+        <button class="icon-button" data-close-dialog="instructor-dialog" type="button">Fechar</button>
+      </div>
+
+      <div class="form-grid">
+        <label class="field">
+          <span>Nome</span>
+          <input name="nome" type="text" required>
+        </label>
+        <label class="field">
+          <span>Email</span>
+          <input name="email" type="email" required>
+        </label>
+        <label class="field">
+          <span>Telefone</span>
+          <input name="telefone" type="tel" required>
+        </label>
+        <label class="field">
+          <span>Especialidade</span>
+          <input name="especialidade" type="text" required>
+        </label>
+        <label class="field">
+          <span>Certificacao</span>
+          <input name="certificacao" type="text" required>
+        </label>
+        <label class="field">
+          <span>Turno</span>
+          <input name="turno" type="text" placeholder="07:00 - 15:00" required>
+        </label>
+      </div>
+
+      <div class="modal-actions">
+        <button class="ghost-button" data-close-dialog="instructor-dialog" type="button">Cancelar</button>
+        <button class="primary-button" type="submit">Guardar instrutor</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog class="modal" id="plan-dialog">
+    <form class="modal-form" id="plan-form" method="dialog">
+      <div class="modal-head">
+        <div>
+          <p class="eyebrow">Composicao de treino</p>
+          <h3>Criar plano de treino</h3>
+        </div>
+        <button class="icon-button" data-close-dialog="plan-dialog" type="button">Fechar</button>
+      </div>
+
+      <div class="form-grid">
+        <label class="field">
+          <span>Nome do plano</span>
+          <input name="nome" type="text" required>
+        </label>
+        <label class="field">
+          <span>Objetivo</span>
+          <input name="objetivo" type="text" placeholder="Forca, definicao, mobilidade..." required>
+        </label>
+        <label class="field">
+          <span>Duracao (semanas)</span>
+          <input name="duracaoSemanas" type="number" min="1" max="52" required>
+        </label>
+        <label class="field">
+          <span>Nivel</span>
+          <select name="nivel" required>
+            <option value="Iniciante">Iniciante</option>
+            <option value="Intermedio">Intermedio</option>
+            <option value="Avancado">Avancado</option>
+          </select>
+        </label>
+        <label class="field">
+          <span>Mensalidade sugerida</span>
+          <input name="mensalidadeSugerida" type="number" min="1" step="0.01" required>
+        </label>
+      </div>
+
+      <section class="panel-card embedded-panel">
+        <div class="panel-head compact">
+          <div>
+            <p class="eyebrow">Adicionar exercicios</p>
+            <h3>Construtor do plano</h3>
+          </div>
+          <span class="status-pill neutral" id="draft-exercises-count">0 exercicios</span>
+        </div>
+
+        <div class="form-grid compact-grid">
+          <label class="field">
+            <span>Exercicio</span>
+            <input id="draft-exercise-name" type="text" placeholder="Agachamento livre">
+          </label>
+          <label class="field">
+            <span>Series</span>
+            <input id="draft-exercise-series" type="number" min="1" max="12">
+          </label>
+          <label class="field">
+            <span>Repeticoes</span>
+            <input id="draft-exercise-repetitions" type="text" placeholder="8-10">
+          </label>
+          <label class="field">
+            <span>Descanso (seg)</span>
+            <input id="draft-exercise-rest" type="number" min="0" max="600">
+          </label>
+          <label class="field field-full">
+            <span>Notas</span>
+            <textarea id="draft-exercise-notes" rows="2" placeholder="Cadencia, foco tecnico, progressao..."></textarea>
+          </label>
+        </div>
+
+        <div class="section-actions">
+          <button class="secondary-button" id="add-draft-exercise-button" type="button">
+            Adicionar exercicio ao plano
+          </button>
+        </div>
+
+        <div class="stack-list" id="draft-exercises-list"></div>
+      </section>
+
+      <div class="modal-actions">
+        <button class="ghost-button" data-close-dialog="plan-dialog" type="button">Cancelar</button>
+        <button class="primary-button" type="submit">Guardar plano</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog class="modal" id="exercise-dialog">
+    <form class="modal-form" id="exercise-form" method="dialog">
+      <div class="modal-head">
+        <div>
+          <p class="eyebrow">Evolucao do plano</p>
+          <h3>Adicionar exercicio</h3>
+          <p class="helper-text" id="exercise-plan-label">Escolhe um plano de treino.</p>
+        </div>
+        <button class="icon-button" data-close-dialog="exercise-dialog" type="button">Fechar</button>
+      </div>
+
+      <input id="exercise-plan-id-input" name="planoId" type="hidden">
+
+      <div class="form-grid">
+        <label class="field">
+          <span>Plano</span>
+          <select id="exercise-plan-select" name="planoIdSelect" required></select>
+        </label>
+        <label class="field">
+          <span>Exercicio</span>
+          <input name="nome" type="text" required>
+        </label>
+        <label class="field">
+          <span>Series</span>
+          <input name="series" type="number" min="1" max="12" required>
+        </label>
+        <label class="field">
+          <span>Repeticoes</span>
+          <input name="repeticoes" type="text" placeholder="10-12" required>
+        </label>
+        <label class="field">
+          <span>Descanso (seg)</span>
+          <input name="descansoSegundos" type="number" min="0" max="600" required>
+        </label>
+        <label class="field field-full">
+          <span>Notas</span>
+          <textarea name="notas" rows="3" placeholder="Detalhes tecnicos ou observacoes de execucao..."></textarea>
+        </label>
+      </div>
+
+      <div class="modal-actions">
+        <button class="ghost-button" data-close-dialog="exercise-dialog" type="button">Cancelar</button>
+        <button class="primary-button" type="submit">Adicionar ao plano</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog class="modal" id="payment-dialog">
+    <form class="modal-form" id="payment-form" method="dialog">
+      <div class="modal-head">
+        <div>
+          <p class="eyebrow">Faturacao</p>
+          <h3>Registar pagamento</h3>
+        </div>
+        <button class="icon-button" data-close-dialog="payment-dialog" type="button">Fechar</button>
+      </div>
+
+      <div class="form-grid">
+        <label class="field">
+          <span>Cliente</span>
+          <select name="clienteId" id="payment-client-select" required></select>
+        </label>
+        <label class="field">
+          <span>Valor</span>
+          <input name="valor" id="payment-amount-input" type="number" min="1" step="0.01" required>
+        </label>
+        <label class="field">
+          <span>Vencimento</span>
+          <input name="vencimento" id="payment-due-date-input" type="date" required>
+        </label>
+        <label class="field">
+          <span>Pago em</span>
+          <input name="pagoEm" type="date">
+        </label>
+        <label class="field">
+          <span>Metodo</span>
+          <select name="metodo" required>
+            <option value="Multibanco">Multibanco</option>
+            <option value="Cartao">Cartao</option>
+            <option value="Debito direto">Debito direto</option>
+            <option value="MB Way">MB Way</option>
+          </select>
+        </label>
+        <p class="helper-text field-full">
+          Deixa o campo "Pago em" vazio para registar um pagamento pendente.
+        </p>
+      </div>
+
+      <div class="modal-actions">
+        <button class="ghost-button" data-close-dialog="payment-dialog" type="button">Cancelar</button>
+        <button class="primary-button" type="submit">Guardar pagamento</button>
+      </div>
+    </form>
+  </dialog>
+
+  <div class="toast-container" id="toast-container" aria-live="polite" aria-atomic="true"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>
