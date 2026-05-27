@@ -14,6 +14,41 @@ const formatShortDate = new Intl.DateTimeFormat("pt-PT", {
   dateStyle: "medium",
 });
 
+const formatWeekdayShort = new Intl.DateTimeFormat("pt-PT", {
+  weekday: "short",
+});
+
+const planPresentationLibrary = [
+  {
+    badge: "Forca",
+    headline: "Ciclos com foco em carga, tecnica e progressao.",
+    accent: "Bom para alunos orientados a performance e estrutura.",
+    themeClass: "theme-strength",
+    iconId: "icon-plans",
+  },
+  {
+    badge: "Consistencia",
+    headline: "Rotinas claras para adesao e resultados sustentaveis.",
+    accent: "Ideal para quem precisa de simplicidade e ritmo.",
+    themeClass: "theme-reset",
+    iconId: "icon-plans",
+  },
+  {
+    badge: "Mobilidade",
+    headline: "Blocos leves para postura, controlo e longevidade.",
+    accent: "Trabalho tecnico com leitura visual limpa.",
+    themeClass: "theme-mobility",
+    iconId: "icon-plans",
+  },
+  {
+    badge: "Resistencia",
+    headline: "Planeamento ritmado para intensidade e capacidade.",
+    accent: "Boa leitura para sessoes mais dinamicas e metabolicas.",
+    themeClass: "theme-endurance",
+    iconId: "icon-plans",
+  },
+];
+
 function createId(prefix) {
   if (window.crypto?.randomUUID) {
     return `${prefix}-${window.crypto.randomUUID()}`;
@@ -41,6 +76,28 @@ function daysBetween(from, to) {
 
 function normalizeText(value) {
   return String(value ?? "").trim().toLowerCase();
+}
+
+function getPlanPresentation(plano, index = 0) {
+  const objective = normalizeText(plano?.objetivo);
+
+  if (objective.includes("forca") || objective.includes("hipertrofia")) {
+    return planPresentationLibrary[0];
+  }
+
+  if (objective.includes("gordura") || objective.includes("consistencia")) {
+    return planPresentationLibrary[1];
+  }
+
+  if (objective.includes("mobilidade") || objective.includes("saude")) {
+    return planPresentationLibrary[2];
+  }
+
+  if (objective.includes("condicionamento") || objective.includes("resistencia")) {
+    return planPresentationLibrary[3];
+  }
+
+  return planPresentationLibrary[index % planPresentationLibrary.length];
 }
 
 function getInitials(name) {
@@ -1047,6 +1104,17 @@ class ServicoFitManager {
     const totalRecebido = this.calcularTotalRecebido();
     const pagamentosRecentes = pagamentos.slice(0, 5);
     const ultimoPagamento = pagamentosRecentes[0] ?? null;
+    const parseTimestamp = (value) => {
+      const timestamp = Date.parse(value ?? "");
+      return Number.isNaN(timestamp) ? 0 : timestamp;
+    };
+    const ultimoCliente = [...clientes]
+      .sort((left, right) => parseTimestamp(right.cliente.dataInscricao) - parseTimestamp(left.cliente.dataInscricao))[0] ?? null;
+    const ultimoPagamentoRecebido = [...pagamentos]
+      .filter((entry) => entry.pagamento.estaPago)
+      .sort((left, right) => parseTimestamp(right.pagamento.pagoEm) - parseTimestamp(left.pagamento.pagoEm))[0] ?? null;
+    const planoEmFoco = [...planos]
+      .sort((left, right) => right.clientesAssociados.length - left.clientesAssociados.length)[0] ?? null;
 
     return {
       heroCopy: `${clientes.length} clientes registados, ${instrutores.length} instrutores ativos e ${clientesEmAtraso.length} mensalidades a exigir seguimento imediato.`,
@@ -1089,6 +1157,32 @@ class ServicoFitManager {
       clientesEmAtraso: clientesEmAtraso.slice(0, 5),
       pagamentosRecentes,
       planosEmUso: planos.slice(0, 5),
+      atividadeRecente: [
+        ultimoCliente
+          ? {
+              label: "Novo cliente",
+              title: `Novo cliente registado: ${ultimoCliente.cliente.nome}`,
+              detail: `${formatShortDate.format(new Date(ultimoCliente.cliente.dataInscricao))} - ${ultimoCliente.instrutor?.nome ?? "Sem instrutor"}`,
+              tone: "cyan",
+            }
+          : null,
+        ultimoPagamentoRecebido
+          ? {
+              label: "Receita",
+              title: `Pagamento recebido: ${formatCurrency.format(ultimoPagamentoRecebido.pagamento.valor)}`,
+              detail: `${ultimoPagamentoRecebido.cliente?.nome ?? "Cliente"} - ${formatShortDate.format(new Date(ultimoPagamentoRecebido.pagamento.pagoEm))}`,
+              tone: "green",
+            }
+          : null,
+        planoEmFoco
+          ? {
+              label: "Planeamento",
+              title: `Plano em foco: ${planoEmFoco.plano.nome}`,
+              detail: `${planoEmFoco.clientesAssociados.length} clientes associados`,
+              tone: "violet",
+            }
+          : null,
+      ].filter(Boolean),
       totalRecebido,
     };
   }
@@ -1364,6 +1458,8 @@ class AplicacaoFitManager {
       btnAdicionarExercicio: document.getElementById("btnAdicionarExercicio"),
       btnRegistarPagamento: document.getElementById("btnRegistarPagamento"),
       btnExportarDados: document.getElementById("btnExportarDados"),
+      topbarEyebrow: document.getElementById("topbar-eyebrow"),
+      topbarTitle: document.getElementById("topbar-title"),
       sidebarDate: document.getElementById("sidebar-date"),
       miniTotalReceived: document.getElementById("mini-total-received"),
       miniOverdueCount: document.getElementById("mini-overdue-count"),
@@ -1372,7 +1468,8 @@ class AplicacaoFitManager {
       statsGrid: document.getElementById("stats-grid"),
       dashboardOverdueList: document.getElementById("dashboard-overdue-list"),
       dashboardPaymentsList: document.getElementById("dashboard-payments-list"),
-      dashboardPlansList: document.getElementById("dashboard-plans-list"),
+      dashboardActivityList: document.getElementById("dashboard-activity-list"),
+      dashboardRevenueChart: document.getElementById("dashboard-revenue-chart"),
       clientSearchInput: document.getElementById("client-search-input"),
       clientStatusFilter: document.getElementById("client-status-filter"),
       clientInstructorFilter: document.getElementById("client-instructor-filter"),
@@ -1421,7 +1518,7 @@ class AplicacaoFitManager {
     this.elements.navLinks.forEach((button) => {
       button.addEventListener("click", () => {
         this.state.activeSection = button.dataset.sectionTarget;
-        this.#toggleVisibleSection();
+        this.#renderNavigation();
       });
     });
 
@@ -1722,7 +1819,36 @@ class AplicacaoFitManager {
     this.elements.navLinks.forEach((button) => {
       button.classList.toggle("is-active", button.dataset.sectionTarget === this.state.activeSection);
     });
+    this.#renderTopbar();
     this.#toggleVisibleSection();
+  }
+
+  #renderTopbar() {
+    const sectionMeta = {
+      dashboard: {
+        eyebrow: "Plataforma profissional de gestao",
+        title: "Dashboard",
+      },
+      clients: {
+        eyebrow: "Relacao com clientes",
+        title: "Clientes",
+      },
+      plans: {
+        eyebrow: "POO aplicada ao treino",
+        title: "Planos de treino",
+      },
+      instructors: {
+        eyebrow: "Equipa tecnica",
+        title: "Instrutores",
+      },
+      finance: {
+        eyebrow: "Controlo financeiro",
+        title: "Financeiro",
+      },
+    };
+    const currentMeta = sectionMeta[this.state.activeSection] ?? sectionMeta.dashboard;
+    this.elements.topbarEyebrow.textContent = currentMeta.eyebrow;
+    this.elements.topbarTitle.textContent = currentMeta.title;
   }
 
   #toggleVisibleSection() {
@@ -1733,6 +1859,52 @@ class AplicacaoFitManager {
 
   #renderDashboard() {
     const dashboard = this.service.obterDashboard();
+    const allPayments = this.service.listarPagamentos();
+    const today = startOfDay(new Date());
+    const revenueSeries = Array.from({ length: 7 }, (_, index) => {
+      const day = addDays(today, index - 6);
+      const value = allPayments
+        .filter((entry) => {
+          const movementDate = startOfDay(entry.pagamento.pagoEm ?? entry.pagamento.vencimento);
+          return movementDate.getTime() === day.getTime();
+        })
+        .reduce((sum, entry) => sum + entry.pagamento.valor, 0);
+
+      return {
+        label: formatWeekdayShort.format(day).replace(".", ""),
+        value,
+      };
+    });
+    const revenueMax = Math.max(...revenueSeries.map((point) => point.value), 1);
+    const mockupStats = [
+      {
+        label: "Clientes ativos",
+        value: dashboard.stats[0]?.value ?? "0",
+        footnote: dashboard.stats[0]?.footnote ?? "Sem clientes registados",
+        tone: "cyan",
+      },
+      {
+        label: "Instrutores ativos",
+        value: dashboard.stats[1]?.value ?? "0",
+        footnote: dashboard.stats[1]?.footnote ?? "Sem instrutores registados",
+        tone: "violet",
+      },
+      {
+        label: "Receita total",
+        value: formatCurrency.format(dashboard.totalRecebido),
+        footnote: `${dashboard.pagamentosRecentes.length} movimentos recentes`,
+        tone: "green",
+      },
+      {
+        label: "Alertas ativos",
+        value: String(dashboard.clientesEmAtraso.length),
+        footnote: dashboard.clientesEmAtraso.length
+          ? `${dashboard.clientesEmAtraso[0].cliente.nome} a exigir seguimento`
+          : "Nenhuma mensalidade em atraso",
+        tone: "teal",
+      },
+    ];
+
     this.elements.sidebarDate.textContent = formatLongDate.format(new Date());
     this.elements.miniTotalReceived.textContent = formatCurrency.format(dashboard.totalRecebido);
     this.elements.miniOverdueCount.textContent = String(dashboard.clientesEmAtraso.length);
@@ -1740,52 +1912,81 @@ class AplicacaoFitManager {
     this.elements.heroTags.innerHTML = dashboard.heroTags
       .map((tag) => `<span class="chip">${escapeHtml(tag)}</span>`)
       .join("");
-    this.elements.statsGrid.innerHTML = dashboard.stats
+
+    this.elements.statsGrid.innerHTML = mockupStats
       .map((stat) => `
-        <article class="stat-card">
-          <span class="stat-label">${escapeHtml(stat.label)}</span>
-          <strong class="stat-value">${escapeHtml(stat.value)}</strong>
-          <span class="stat-footnote">${escapeHtml(stat.footnote)}</span>
+        <article class="mock-stat-card tone-${escapeHtml(stat.tone)}">
+          <span class="mock-stat-label">${escapeHtml(stat.label)}</span>
+          <strong class="mock-stat-value">${escapeHtml(stat.value)}</strong>
+          <span class="mock-stat-footnote">${escapeHtml(stat.footnote)}</span>
+          <span class="mock-stat-wave" aria-hidden="true"></span>
         </article>
       `)
       .join("");
+
     this.elements.dashboardOverdueList.innerHTML = dashboard.clientesEmAtraso.length
       ? dashboard.clientesEmAtraso.map((entry) => `
-          <article class="stack-item">
-            <div class="stack-top">
-              <strong>${escapeHtml(entry.cliente.nome)}</strong>
-              <span class="chip ${entry.estadoCobranca.tone}">${escapeHtml(entry.estadoCobranca.label)}</span>
+          <article class="mock-alert-card">
+            <div class="mock-alert-top">
+              <span class="mock-row-icon warning" aria-hidden="true">!</span>
+              <div class="mock-row-copy">
+                <strong>${escapeHtml(entry.cliente.nome)}</strong>
+                <span>${formatCurrency.format(entry.cliente.mensalidade)} - vencimento ${formatShortDate.format(new Date(entry.cliente.proximoVencimento))}</span>
+              </div>
+              <span class="mock-inline-pill ${escapeHtml(entry.estadoCobranca.tone)}">${escapeHtml(entry.estadoCobranca.label)}</span>
             </div>
-            <p>${formatCurrency.format(entry.cliente.mensalidade)} - vencimento ${formatShortDate.format(new Date(entry.cliente.proximoVencimento))}</p>
-            <div class="stack-actions">
+            <div class="stack-actions mock-row-actions">
               <button class="small-action" data-action="prefill-payment" data-client-id="${escapeHtml(entry.cliente.id)}" type="button">Registar pagamento</button>
               <button class="small-action subtle-action" data-action="open-client" data-client-id="${escapeHtml(entry.cliente.id)}" type="button">Abrir cliente</button>
             </div>
           </article>
         `).join("")
-      : `<div class="is-empty">Sem clientes com mensalidade em atraso.</div>`;
+      : `<div class="mock-empty">Sem clientes com mensalidade em atraso.</div>`;
+
     this.elements.dashboardPaymentsList.innerHTML = dashboard.pagamentosRecentes.length
       ? dashboard.pagamentosRecentes.map((entry) => `
-          <article class="stack-item">
-            <div class="stack-top">
+          <article class="mock-payment-row">
+            <div class="mock-row-copy">
               <strong>${escapeHtml(entry.cliente?.nome ?? "Cliente removido")}</strong>
-              <span class="chip ${this.#paymentTone(entry.pagamento.estado)}">${formatCurrency.format(entry.pagamento.valor)}</span>
+              <span>${escapeHtml(entry.pagamento.metodo)} - ${entry.pagamento.estaPago ? "pago em" : "vence em"} ${formatShortDate.format(new Date(entry.pagamento.pagoEm ?? entry.pagamento.vencimento))}</span>
             </div>
-            <p>${escapeHtml(entry.pagamento.metodo)} - ${entry.pagamento.estaPago ? "pago em" : "vence em"} ${formatShortDate.format(new Date(entry.pagamento.pagoEm ?? entry.pagamento.vencimento))}</p>
+            <div class="mock-payment-meta">
+              <strong>${formatCurrency.format(entry.pagamento.valor)}</strong>
+              <span class="mock-inline-pill ${this.#paymentTone(entry.pagamento.estado)}">${escapeHtml(this.#paymentLabel(entry.pagamento.estado))}</span>
+            </div>
           </article>
         `).join("")
-      : `<div class="is-empty">Ainda nao existem pagamentos registados no sistema.</div>`;
-    this.elements.dashboardPlansList.innerHTML = dashboard.planosEmUso.length
-      ? dashboard.planosEmUso.map((entry) => `
-          <article class="stack-item">
-            <div class="stack-top">
-              <strong>${escapeHtml(entry.plano.nome)}</strong>
-              <span class="chip">${entry.clientesAssociados.length} clientes</span>
+      : `<div class="mock-empty">Ainda nao existem pagamentos registados no sistema.</div>`;
+
+    this.elements.dashboardActivityList.innerHTML = dashboard.atividadeRecente.length
+      ? dashboard.atividadeRecente.map((entry) => `
+          <article class="mock-plan-card">
+            <div class="mock-row-copy">
+              <strong>${escapeHtml(entry.title)}</strong>
+              <span>${escapeHtml(entry.detail)}</span>
             </div>
-            <p>${entry.plano.totalExercicios} exercicios - ${escapeHtml(entry.plano.objetivo)}</p>
+            <span class="mock-inline-pill ${escapeHtml(entry.tone)}">${escapeHtml(entry.label)}</span>
           </article>
         `).join("")
-      : `<div class="is-empty">Cria o primeiro plano para comecar a distribuir treino.</div>`;
+      : `<div class="mock-empty">Ainda nao existem eventos recentes para mostrar.</div>`;
+
+    this.elements.dashboardRevenueChart.innerHTML = `
+      <div class="revenue-chart-head">
+        <strong>${formatCurrency.format(revenueSeries.reduce((sum, point) => sum + point.value, 0))}</strong>
+        <span>Fluxo financeiro agregado por dia</span>
+      </div>
+      <div class="revenue-chart-bars">
+        ${revenueSeries.map((point) => `
+          <article class="revenue-chart-column">
+            <span class="revenue-chart-value">${formatCurrency.format(point.value)}</span>
+            <div class="revenue-chart-track">
+              <span class="revenue-chart-fill" style="height:${point.value ? Math.max(14, Math.round((point.value / revenueMax) * 100)) : 0}%"></span>
+            </div>
+            <span class="revenue-chart-label">${escapeHtml(point.label)}</span>
+          </article>
+        `).join("")}
+      </div>
+    `;
   }
 
   #renderClients() {
@@ -1944,49 +2145,80 @@ class AplicacaoFitManager {
       <span class="chip">${plans.reduce((sum, entry) => sum + entry.clientesAssociados.length, 0)} associacoes ativas</span>
     `;
     this.elements.plansGrid.innerHTML = plans.length
-      ? plans.map((entry) => `
-          <article class="class-card plan-card">
-            <div class="class-top">
-              <div>
-                <p class="eyebrow">${escapeHtml(entry.plano.nivel)}</p>
-                <div class="class-title">${escapeHtml(entry.plano.nome)}</div>
-              </div>
-              <span class="chip">${entry.plano.totalExercicios} exercicios</span>
-            </div>
-            <p class="class-copy">${escapeHtml(entry.plano.objetivo)}</p>
-            <div class="class-meta-grid">
-              <div class="metric-block">
-                <span>Duracao</span>
-                <strong>${entry.plano.duracaoSemanas} semanas</strong>
-              </div>
-              <div class="metric-block">
-                <span>Mensalidade sugerida</span>
-                <strong>${formatCurrency.format(entry.plano.mensalidadeSugerida)}</strong>
-              </div>
-              <div class="metric-block">
-                <span>Clientes associados</span>
-                <strong>${entry.clientesAssociados.length}</strong>
-              </div>
-              <div class="metric-block">
-                <span>Nivel</span>
-                <strong>${escapeHtml(entry.plano.nivel)}</strong>
-              </div>
-            </div>
-            <div class="exercise-list">
-              ${entry.plano.exercicios.map((exercicio) => `
-                <div class="exercise-item">
-                  <strong>${escapeHtml(exercicio.nome)}</strong>
-                  <span>${escapeHtml(exercicio.resumo)}</span>
+      ? plans.map((entry, index) => {
+          const presentation = getPlanPresentation(entry.plano, index);
+          return `
+            <article class="class-card plan-card">
+              <div class="plan-visual ${escapeHtml(presentation.themeClass)}">
+                <div class="module-visual-top">
+                  <span class="module-badge">${escapeHtml(presentation.badge)}</span>
+                  <span class="module-orb">
+                    <svg class="module-icon-svg" viewBox="0 0 24 24" aria-hidden="true">
+                      <use href="#${escapeHtml(presentation.iconId)}"></use>
+                    </svg>
+                  </span>
                 </div>
-              `).join("")}
-            </div>
-            <div class="section-actions">
-              <button class="secondary-button" data-action="open-exercise-dialog" data-plan-id="${escapeHtml(entry.plano.id)}" type="button">
-                Adicionar exercicio
-              </button>
-            </div>
-          </article>
-        `).join("")
+                <div class="module-copy">
+                  <strong>${escapeHtml(presentation.headline)}</strong>
+                  <span>${escapeHtml(presentation.accent)}</span>
+                </div>
+                <div class="module-stat-row">
+                  <span class="module-mini-stat">
+                    <strong>${entry.plano.duracaoSemanas}</strong>
+                    <small>semanas</small>
+                  </span>
+                  <span class="module-mini-stat">
+                    <strong>${entry.plano.totalExercicios}</strong>
+                    <small>exercicios</small>
+                  </span>
+                  <span class="module-mini-stat">
+                    <strong>${entry.clientesAssociados.length}</strong>
+                    <small>clientes</small>
+                  </span>
+                </div>
+              </div>
+              <div class="class-top">
+                <div>
+                  <p class="eyebrow">${escapeHtml(entry.plano.nivel)}</p>
+                  <div class="class-title">${escapeHtml(entry.plano.nome)}</div>
+                </div>
+                <span class="chip">${entry.plano.totalExercicios} exercicios</span>
+              </div>
+              <p class="class-copy">${escapeHtml(entry.plano.objetivo)}</p>
+              <div class="class-meta-grid">
+                <div class="metric-block">
+                  <span>Duracao</span>
+                  <strong>${entry.plano.duracaoSemanas} semanas</strong>
+                </div>
+                <div class="metric-block">
+                  <span>Mensalidade sugerida</span>
+                  <strong>${formatCurrency.format(entry.plano.mensalidadeSugerida)}</strong>
+                </div>
+                <div class="metric-block">
+                  <span>Clientes associados</span>
+                  <strong>${entry.clientesAssociados.length}</strong>
+                </div>
+                <div class="metric-block">
+                  <span>Nivel</span>
+                  <strong>${escapeHtml(entry.plano.nivel)}</strong>
+                </div>
+              </div>
+              <div class="exercise-list">
+                ${entry.plano.exercicios.map((exercicio) => `
+                  <div class="exercise-item">
+                    <strong>${escapeHtml(exercicio.nome)}</strong>
+                    <span>${escapeHtml(exercicio.resumo)}</span>
+                  </div>
+                `).join("")}
+              </div>
+              <div class="section-actions">
+                <button class="secondary-button" data-action="open-exercise-dialog" data-plan-id="${escapeHtml(entry.plano.id)}" type="button">
+                  Adicionar exercicio
+                </button>
+              </div>
+            </article>
+          `;
+        }).join("")
       : `<div class="is-empty">Ainda nao existem planos criados.</div>`;
   }
 

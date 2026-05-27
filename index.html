@@ -7,42 +7,150 @@
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+  <svg class="icon-sprite" aria-hidden="true" focusable="false">
+    <symbol id="icon-dashboard" viewBox="0 0 24 24">
+      <rect x="3.5" y="4" width="7" height="7" rx="2"></rect>
+      <rect x="13.5" y="4" width="7" height="4.5" rx="2"></rect>
+      <rect x="13.5" y="11.5" width="7" height="8.5" rx="2"></rect>
+      <rect x="3.5" y="14" width="7" height="6" rx="2"></rect>
+    </symbol>
+    <symbol id="icon-menu" viewBox="0 0 24 24">
+      <path d="M5 7h14"></path>
+      <path d="M5 12h14"></path>
+      <path d="M5 17h14"></path>
+    </symbol>
+    <symbol id="icon-search" viewBox="0 0 24 24">
+      <circle cx="11" cy="11" r="5.5"></circle>
+      <path d="m16 16 3.5 3.5"></path>
+    </symbol>
+    <symbol id="icon-clients" viewBox="0 0 24 24">
+      <path d="M9 12a3.25 3.25 0 1 0 0-6.5A3.25 3.25 0 0 0 9 12Z"></path>
+      <path d="M16.25 10.5a2.75 2.75 0 1 0 0-5.5"></path>
+      <path d="M3.75 18.5c1.15-2.5 3.17-3.75 6.05-3.75 2.88 0 4.9 1.25 6.05 3.75"></path>
+      <path d="M14.75 15.5c2.02.18 3.48 1.18 4.4 3"></path>
+    </symbol>
+    <symbol id="icon-plans" viewBox="0 0 24 24">
+      <path d="M9 4.5h6a2.5 2.5 0 0 1 2.5 2.5v11a2.5 2.5 0 0 1-2.5 2.5H9A2.5 2.5 0 0 1 6.5 18V7A2.5 2.5 0 0 1 9 4.5Z"></path>
+      <path d="M10 4.5a2 2 0 0 1 4 0v1h-4Z"></path>
+      <path d="M10 10.5h5"></path>
+      <path d="M10 14h7"></path>
+      <path d="M10 17.5h4"></path>
+    </symbol>
+    <symbol id="icon-finance" viewBox="0 0 24 24">
+      <rect x="3.5" y="6" width="17" height="12" rx="3"></rect>
+      <path d="M3.5 10.5h17"></path>
+      <path d="M8 14.5h3"></path>
+      <circle cx="16.75" cy="14.25" r="1.75"></circle>
+    </symbol>
+    <symbol id="icon-health" viewBox="0 0 24 24">
+      <path d="M12 20.25s-6.75-4.07-6.75-9.2a4.03 4.03 0 0 1 7.12-2.6L12 8.9l-.37-.45a4.03 4.03 0 0 1 7.12 2.6c0 5.13-6.75 9.2-6.75 9.2Z"></path>
+      <path d="M7.75 12.25h2.4l1.15-2.25 1.55 4 1.2-2h2.2"></path>
+    </symbol>
+    <symbol id="icon-revenue" viewBox="0 0 24 24">
+      <path d="M4.5 19.5h15"></path>
+      <path d="M7.5 16.5v-4"></path>
+      <path d="M12 19.5v-8"></path>
+      <path d="M16.5 19.5V9"></path>
+      <path d="M6 9.5 10 6l3.25 2.5L18 4.5"></path>
+      <path d="M15.75 4.5H18v2.25"></path>
+    </symbol>
+    <symbol id="icon-planning" viewBox="0 0 24 24">
+      <rect x="4" y="5.5" width="16" height="14.5" rx="3"></rect>
+      <path d="M8 3.75v3.5"></path>
+      <path d="M16 3.75v3.5"></path>
+      <path d="M4 10.5h16"></path>
+      <path d="m9 15 1.75 1.75L15 12.5"></path>
+    </symbol>
+    <symbol id="icon-instructors" viewBox="0 0 24 24">
+      <path d="M8.5 11.75a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"></path>
+      <path d="M16.5 13a2.5 2.5 0 1 0 0-5"></path>
+      <path d="M4.5 19c1.05-2.35 3.05-3.5 6-3.5s4.95 1.15 6 3.5"></path>
+      <path d="M15.5 16.25c1.65.16 2.95.9 3.9 2.25"></path>
+    </symbol>
+    <symbol id="icon-export" viewBox="0 0 24 24">
+      <path d="M12 4.5v10"></path>
+      <path d="m8.5 8 3.5-3.5L15.5 8"></path>
+      <path d="M5 15.5v1.5A2.5 2.5 0 0 0 7.5 19.5h9A2.5 2.5 0 0 0 19 17v-1.5"></path>
+    </symbol>
+    <symbol id="icon-exercise" viewBox="0 0 24 24">
+      <path d="M3.5 9.5h2.5v5H3.5Z"></path>
+      <path d="M18 9.5h2.5v5H18Z"></path>
+      <path d="M6 8h2v8H6Z"></path>
+      <path d="M16 8h2v8h-2Z"></path>
+      <path d="M8 11.25h8"></path>
+      <path d="M8 12.75h8"></path>
+    </symbol>
+    <symbol id="icon-add-user" viewBox="0 0 24 24">
+      <path d="M10 12a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Z"></path>
+      <path d="M4.5 19c1.15-2.7 3.45-4 6.9-4 1.4 0 2.65.22 3.75.68"></path>
+      <path d="M18 10v7"></path>
+      <path d="M14.5 13.5h7"></path>
+    </symbol>
+  </svg>
+
   <div class="ambient ambient-left"></div>
   <div class="ambient ambient-right"></div>
 
-  <div class="app-shell">
+  <div class="app app-shell">
     <aside class="sidebar">
       <div class="brand-block">
         <div class="brand-mark" aria-hidden="true">
           <span>FM</span>
         </div>
-        <p class="eyebrow">Sistema de Gestao de Ginasio</p>
         <h1>FitManager</h1>
-        <p class="brand-copy">
-          Clientes, instrutores, planos de treino e faturacao num cockpit unico, claro e orientado a execucao.
-        </p>
+        <p class="sidebar-subtitle">Sistema de Gestao de Ginasio</p>
       </div>
 
       <nav class="nav-stack" aria-label="Navegacao principal">
         <button class="nav-link is-active" data-section-target="dashboard">
-          <span class="nav-label">Dashboard</span>
-          <span class="nav-meta">Operacao, receita e alertas</span>
+          <span class="nav-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24">
+              <use href="#icon-dashboard"></use>
+            </svg>
+          </span>
+          <span class="nav-link-content">
+            <span class="nav-label">Dashboard</span>
+          </span>
         </button>
         <button class="nav-link" data-section-target="clients">
-          <span class="nav-label">Clientes</span>
-          <span class="nav-meta">Pesquisa, detalhe e plano associado</span>
+          <span class="nav-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24">
+              <use href="#icon-clients"></use>
+            </svg>
+          </span>
+          <span class="nav-link-content">
+            <span class="nav-label">Clientes</span>
+          </span>
         </button>
         <button class="nav-link" data-section-target="plans">
-          <span class="nav-label">Planos de treino</span>
-          <span class="nav-meta">Templates, exercicios e estrutura</span>
-        </button>
-        <button class="nav-link" data-section-target="finance">
-          <span class="nav-label">Financeiro</span>
-          <span class="nav-meta">Pagamentos e mensalidades em atraso</span>
+          <span class="nav-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24">
+              <use href="#icon-plans"></use>
+            </svg>
+          </span>
+          <span class="nav-link-content">
+            <span class="nav-label">Planos de treino</span>
+          </span>
         </button>
         <button class="nav-link" data-section-target="instructors">
-          <span class="nav-label">Instrutores</span>
-          <span class="nav-meta">Especialidades e carteira de clientes</span>
+          <span class="nav-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24">
+              <use href="#icon-instructors"></use>
+            </svg>
+          </span>
+          <span class="nav-link-content">
+            <span class="nav-label">Instrutores</span>
+          </span>
+        </button>
+        <button class="nav-link" data-section-target="finance">
+          <span class="nav-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24">
+              <use href="#icon-finance"></use>
+            </svg>
+          </span>
+          <span class="nav-link-content">
+            <span class="nav-label">Financeiro</span>
+          </span>
         </button>
       </nav>
 
@@ -72,78 +180,174 @@
       </section>
     </aside>
 
-    <div class="main-shell">
-      <header class="topbar">
+    <div class="main main-shell">
+      <header class="topbar dashboard-header">
         <div>
-          <p class="eyebrow">Plataforma profissional de gestao</p>
-          <h2 class="topbar-title">FitManager</h2>
+          <p class="eyebrow" id="topbar-eyebrow">Plataforma profissional de gestao</p>
+          <h2 class="topbar-title" id="topbar-title">Dashboard</h2>
         </div>
 
         <div class="topbar-actions">
           <button class="ghost-button" id="btnExportarDados" type="button">
-            Exportar dados
+            <span class="button-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24">
+                <use href="#icon-export"></use>
+              </svg>
+            </span>
+            <span>Exportar dados</span>
           </button>
           <button class="ghost-button" id="btnRegistarPagamento" data-open-dialog="payment-dialog" type="button">
-            Registar pagamento
+            <span class="button-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24">
+                <use href="#icon-finance"></use>
+              </svg>
+            </span>
+            <span>Registar pagamento</span>
           </button>
           <button class="ghost-button" id="btnAdicionarExercicio" data-open-dialog="exercise-dialog" type="button">
-            Adicionar exercicio
+            <span class="button-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24">
+                <use href="#icon-exercise"></use>
+              </svg>
+            </span>
+            <span>Adicionar exercicio</span>
           </button>
           <button class="secondary-button" id="btnNovoPlano" data-open-dialog="plan-dialog" type="button">
-            Novo plano
+            <span class="button-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24">
+                <use href="#icon-plans"></use>
+              </svg>
+            </span>
+            <span>Novo plano</span>
           </button>
           <button class="secondary-button" id="btnNovoInstrutor" data-open-dialog="instructor-dialog" type="button">
-            Novo instrutor
+            <span class="button-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24">
+                <use href="#icon-instructors"></use>
+              </svg>
+            </span>
+            <span>Novo instrutor</span>
           </button>
           <button class="primary-button" id="btnNovoCliente" data-open-dialog="client-dialog" type="button">
-            Novo cliente
+            <span class="button-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24">
+                <use href="#icon-add-user"></use>
+              </svg>
+            </span>
+            <span>Novo cliente</span>
           </button>
         </div>
       </header>
 
-      <main class="content-shell">
+      <main class="content-shell dashboard-content">
         <section class="section-panel is-visible" id="dashboard-section" aria-labelledby="dashboard-heading">
-          <div class="hero-card">
-            <div>
-              <p class="eyebrow">Painel executivo</p>
-              <h3 id="dashboard-heading">Treino, relacao com clientes e receita no mesmo fluxo</h3>
-              <p class="hero-copy" id="hero-copy">--</p>
+          <div class="landing-stage dashboard-home-shell">
+            <div class="dashboard-hero-card">
+              <div class="dashboard-hero-copy-block">
+                <p class="dashboard-home-eyebrow">Cockpit operacional</p>
+                <h3 id="dashboard-heading" class="dashboard-home-title">Dashboard principal</h3>
+                <p class="dashboard-home-copy">
+                  Clientes, instrutores, planos de treino e faturacao num cockpit unico, claro e orientado a execucao.
+                </p>
+                <p class="hero-copy hero-copy-accent" id="hero-copy">--</p>
+                <div class="hero-tags dashboard-tag-list" id="hero-tags"></div>
+              </div>
+
+              <div class="dashboard-preview-shell">
+                <div class="dashboard-preview-head">
+                  <div>
+                    <p class="mockup-kicker">Visao geral</p>
+                    <h4>Operacao, receita e adesao</h4>
+                  </div>
+                  <span class="mockup-panel-badge">Hoje</span>
+                </div>
+                <div class="stats-grid dashboard-preview-stats" id="stats-grid"></div>
+              </div>
             </div>
-            <div class="hero-tags" id="hero-tags"></div>
-          </div>
 
-          <div class="stats-grid" id="stats-grid"></div>
+            <div class="feature-grid landing-feature-grid" aria-label="Modulos principais">
+              <button class="feature-card landing-module-card" data-section-target="clients" type="button">
+                <span class="landing-module-icon theme-clients">
+                  <svg class="module-icon-svg" viewBox="0 0 24 24" aria-hidden="true">
+                    <use href="#icon-clients"></use>
+                  </svg>
+                </span>
+                <span class="landing-module-body">
+                  <span class="landing-module-title">Clientes</span>
+                  <span class="landing-module-copy">Perfis, planos e pagamentos num so lugar.</span>
+                </span>
+              </button>
 
-          <div class="dashboard-grid fit-grid">
-            <section class="panel-card">
-              <div class="panel-head">
-                <div>
-                  <p class="eyebrow">Prioridade financeira</p>
-                  <h3>Clientes em atraso</h3>
+              <button class="feature-card landing-module-card" data-section-target="plans" type="button">
+                <span class="landing-module-icon theme-plans">
+                  <svg class="module-icon-svg" viewBox="0 0 24 24" aria-hidden="true">
+                    <use href="#icon-plans"></use>
+                  </svg>
+                </span>
+                <span class="landing-module-body">
+                  <span class="landing-module-title">Planos de Treino</span>
+                  <span class="landing-module-copy">Cria, organiza e acompanha templates com clareza.</span>
+                </span>
+              </button>
+
+              <button class="feature-card landing-module-card" data-section-target="finance" type="button">
+                <span class="landing-module-icon theme-finance">
+                  <svg class="module-icon-svg" viewBox="0 0 24 24" aria-hidden="true">
+                    <use href="#icon-finance"></use>
+                  </svg>
+                </span>
+                <span class="landing-module-body">
+                  <span class="landing-module-title">Financeiro</span>
+                  <span class="landing-module-copy">Receitas, alertas e faturacao sempre sob controlo.</span>
+                </span>
+              </button>
+            </div>
+
+            <div class="dashboard-grid fit-grid dashboard-overview-grid">
+              <section class="panel-card dashboard-panel">
+                <div class="panel-head">
+                  <div>
+                    <p class="eyebrow">Saude e adesao</p>
+                    <h3>Alertas e seguimento</h3>
+                  </div>
+                  <span class="mockup-panel-badge warning">Prioritario</span>
                 </div>
-              </div>
-              <div class="stack-list" id="dashboard-overdue-list"></div>
-            </section>
+                <div class="mockup-list" id="dashboard-overdue-list"></div>
+              </section>
 
-            <section class="panel-card">
-              <div class="panel-head">
-                <div>
-                  <p class="eyebrow">Entrada de caixa</p>
-                  <h3>Pagamentos recentes</h3>
+              <section class="panel-card dashboard-panel">
+                <div class="panel-head">
+                  <div>
+                    <p class="eyebrow">Receita ativa</p>
+                    <h3>Pagamentos recentes</h3>
+                  </div>
+                  <span class="mockup-panel-badge">Live</span>
                 </div>
-              </div>
-              <div class="stack-list" id="dashboard-payments-list"></div>
-            </section>
+                <div class="mockup-list" id="dashboard-payments-list"></div>
+              </section>
 
-            <section class="panel-card">
-              <div class="panel-head">
-                <div>
-                  <p class="eyebrow">Uso dos templates</p>
-                  <h3>Planos mais associados</h3>
+              <section class="panel-card dashboard-panel">
+                <div class="panel-head">
+                  <div>
+                    <p class="eyebrow">Planeamento</p>
+                    <h3>Atividade recente</h3>
+                  </div>
+                  <span class="mockup-panel-badge">Live</span>
                 </div>
-              </div>
-              <div class="stack-list" id="dashboard-plans-list"></div>
-            </section>
+                <div class="mockup-plan-list" id="dashboard-activity-list"></div>
+              </section>
+
+              <section class="panel-card dashboard-panel dashboard-revenue-panel">
+                <div class="panel-head">
+                  <div>
+                    <p class="eyebrow">Receita</p>
+                    <h3>Ultimos 7 dias</h3>
+                  </div>
+                  <span class="mockup-panel-badge success">Grafico</span>
+                </div>
+                <div class="revenue-chart" id="dashboard-revenue-chart"></div>
+              </section>
+            </div>
           </div>
         </section>
 
