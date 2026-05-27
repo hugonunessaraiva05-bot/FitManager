@@ -1,223 +1,82 @@
 # Relatório Técnico - FitManager
 
-## 1. Introdução e Contexto
+## Introdução
 
-O projeto `FitManager` consiste numa aplicação web de gestão de ginásio desenvolvida com o objetivo de apoiar as tarefas operacionais mais frequentes de um espaço de treino. A aplicação permite centralizar informação relativa a clientes, instrutores, planos de treino e pagamentos, oferecendo uma interface simples e organizada para consulta e registo de dados.
+O FitManager é uma aplicação web concebida para apoiar a gestão de um ginásio. A solução integra funcionalidades de clientes, planos de treino, instrutores e pagamentos numa interface simples e prática.
 
-Do ponto de vista académico, o projeto foi também pensado como um exercício prático de aplicação de conceitos de Programação Orientada a Objetos, separação de responsabilidades e persistência de dados no navegador. A solução foi implementada com tecnologias web base, sem dependência de frameworks externas, o que facilita a compreensão da arquitetura e da lógica desenvolvida.
+## Objetivo da Aplicação
 
-## 2. Levantamento de Requisitos
+O objetivo desta aplicação é reduzir a carga administrativa e fornecer uma visão imediata do funcionamento do ginásio. A ferramenta destina-se a facilitar o acompanhamento diário das operações e a gestão de informação relevante.
 
-### 2.1 Requisitos Funcionais
+## Funcionalidades Principais
 
-Os principais requisitos funcionais identificados para o sistema são os seguintes:
+- **Dashboard**  
+  Apresenta indicadores gerais do ginásio, como número de clientes, receitas e situações de pagamento.
 
-- Registar clientes com dados pessoais, objetivo de treino, mensalidade e instrutor associado.
-- Registar instrutores com dados de contacto, especialidade, certificação e turno.
-- Criar planos de treino com nome, objetivo, nível, duração e mensalidade sugerida.
-- Adicionar exercícios aos planos de treino.
-- Associar planos de treino a clientes.
-- Registar pagamentos, incluindo valor, data de vencimento, data de pagamento e método.
-- Consultar um dashboard com indicadores operacionais e financeiros.
-- Pesquisar clientes pelo nome.
-- Consultar clientes com mensalidade em atraso.
-- Calcular o total recebido pelo ginásio.
-- Editar e apagar dados, como evolução natural do sistema.
-- Exportar os dados do sistema para ficheiro JSON.
-- Repor os dados de demonstração da aplicação.
+- **Clientes**  
+  Permite gerir dados pessoais dos clientes, o plano de treino associado e o instrutor responsável.
 
-### 2.2 Requisitos Não Funcionais
+- **Planos de treino**  
+  Suporta a criação e consulta de planos com objetivos, duração, nível e exercícios.
 
-Para além das funcionalidades, foram considerados os seguintes requisitos não funcionais:
+- **Instrutores**  
+  Garante a gestão dos instrutores, incluindo especialidade, certificação e turno.
 
-- Interface simples, intuitiva e de fácil utilização.
-- Organização clara do código por camadas de responsabilidade.
-- Persistência de dados com `localStorage`.
-- Validação de dados introduzidos nos formulários.
-- Facilidade de manutenção e evolução futura.
-- Compatibilidade com navegador web moderno.
-- Boa legibilidade do código e da estrutura dos ficheiros.
-- Atualização dinâmica da interface sem necessidade de recarregar a página.
+- **Financeiro**  
+  Oferece uma visão do estado financeiro do ginásio com indicadores de receita e pagamentos.
 
-## 3. Modelação
+- **Pagamentos**  
+  Regista pagamentos, contabiliza valores e datas, e identifica pagamentos em atraso.
 
-### 3.1 Casos de Uso
+## Explicação do Novo Layout Moderno
 
-Os casos de uso principais da aplicação podem ser descritos da seguinte forma:
+O layout foi atualizado com um estilo moderno e organizado. A interface é mais limpa, com zonas bem definidas, tipografia clara e uso de espaços para melhorar a leitura.
 
-- **Criar cliente**  
-  O administrador introduz os dados do novo cliente, seleciona um instrutor e, opcionalmente, um plano inicial. O sistema valida os dados, guarda o registo e atualiza o dashboard.
+A sidebar posicionada à esquerda reforça a navegação e mantém o foco no conteúdo principal. Os cartões de informação e os botões de ação tornam a interface mais acessível e intuitiva.
 
-- **Criar instrutor**  
-  O administrador regista um novo instrutor com os respetivos dados profissionais. O sistema adiciona o instrutor à base de dados local e disponibiliza-o para associação a clientes.
+## Tecnologias Usadas
 
-- **Criar plano de treino**  
-  O administrador cria um plano com informação geral e acrescenta exercícios ao mesmo. O plano fica disponível para associação futura a clientes.
+A aplicação foi desenvolvida com as seguintes tecnologias:
 
-- **Associar exercício a plano**  
-  O administrador escolhe um plano existente e adiciona um novo exercício, definindo séries, repetições, descanso e notas.
+- HTML
+- CSS
+- JavaScript
 
-- **Registar pagamento**  
-  O administrador seleciona um cliente, define o valor e a data, e regista o pagamento como liquidado ou pendente. O sistema atualiza os indicadores financeiros.
+Estas tecnologias garantem compatibilidade com navegadores modernos e permitem uma implementação leve e sem dependências externas.
 
-- **Exportar dados**  
-  O administrador aciona a exportação e o sistema gera um ficheiro JSON com o estado atual da aplicação.
+## Estrutura dos Ficheiros
 
-### 3.2 User Stories
+A versão atual do projeto inclui os seguintes ficheiros e pastas:
 
-- Como administrador, quero registar clientes para gerir os membros do ginásio.
-- Como administrador, quero registar instrutores para organizar a equipa técnica.
-- Como administrador, quero criar planos de treino para associar aos clientes.
-- Como administrador, quero adicionar exercícios aos planos para estruturar melhor o acompanhamento do treino.
-- Como administrador, quero registar pagamentos para controlar mensalidades.
-- Como administrador, quero consultar o dashboard para acompanhar o estado do ginásio.
-- Como administrador, quero exportar os dados para manter uma cópia externa da informação.
+- `index.html`
+- `styles.css`
+- `app.js`
+- `assets/`
 
-## 4. Arquitetura
+O `index.html` contém a marcação da interface. O `styles.css` define o estilo e a responsividade. O `app.js` gere a lógica e o comportamento da aplicação. A pasta `assets/` armazena imagens e recursos visuais.
 
-### 4.1 Estrutura do Projeto
+## Melhorias Feitas no Dashboard
 
-O projeto encontra-se organizado nos seguintes ficheiros principais:
+- **Sidebar à esquerda**  
+  A navegação principal foi organizada numa barra lateral esquerda, garantindo acesso rápido e consistente a todas as secções.
 
-- `index.html`  
-  Contém a estrutura da interface, incluindo navegação, dashboard, tabelas, painéis e formulários em janelas modais.
+- **Cards de estatísticas**  
+  Foram adicionados cartões para destacar métricas essenciais, como clientes ativos e total de receitas.
 
-- `styles.css`  
-  Define o aspeto visual da aplicação, incluindo layout, cartões, tabelas, botões, responsividade e identidade visual.
+- **Botões de ação**  
+  Os botões principais são visíveis e bem posicionados, facilitando a execução de tarefas como registar novo cliente ou novo pagamento.
 
-- `app.js`  
-  Contém toda a lógica da aplicação: classes do domínio, persistência em `localStorage`, serviços de negócio, renderização da interface e tratamento de eventos.
+- **Gráficos/indicadores**  
+  O dashboard apresenta indicadores visuais importantes para uma leitura rápida do desempenho do ginásio.
 
-- `README.md`  
-  Apresenta uma visão geral resumida do projeto, da sua utilização e dos conceitos aplicados.
+- **Scroll corrigido**  
+  O comportamento de scroll foi ajustado para evitar cortes de conteúdo e garantir uma navegação fluida.
 
-- `RELATORIO.md`  
-  Documento técnico com descrição detalhada da solução, requisitos, modelação, arquitetura e reflexão final.
+- **Design responsivo**  
+  O layout adapta-se a diferentes tamanhos de ecrã, garantindo uma boa experiência em desktop e em dispositivos móveis.
 
-Em termos lógicos, a aplicação está estruturada em três níveis principais:
+## Conclusão
 
-- **Modelo de domínio**: classes como `Cliente`, `Instrutor`, `PlanoTreino`, `Exercicio` e `Pagamento`.
-- **Camada de gestão de dados e regras**: representada por classes como `RepositorioFitManager` e `ServicoFitManager`.
-- **Camada de interface**: gerida por `AplicacaoFitManager`, responsável pela interação com o HTML e pela atualização do dashboard.
+O relatório reflete o estado atual do FitManager e destaca as melhorias introduzidas no layout e no dashboard. A aplicação demonstra uma implementação funcional de gestão de ginásio com tecnologia web base e um design moderno.
 
-### 4.2 Diagrama de Classes
-
-```text
-Pessoa
-|- id
-|- nome
-|- email
-|- telefone
-|- mostrarInfo()
-|
-|-- Cliente
-|   |- objetivo
-|   |- mensalidade
-|   |- dataInscricao
-|   |- proximoVencimento
-|   |- instrutorId
-|   |- planoTreino : PlanoTreino
-|   |- notas
-|   |- ativo
-|   |- associarPlano()
-|   |- mostrarInfo()
-|
-|-- Instrutor
-    |- especialidade
-    |- certificacao
-    |- turno
-    |- mostrarInfo()
-
-PlanoTreino
-|- id
-|- templateId
-|- nome
-|- objetivo
-|- duracaoSemanas
-|- nivel
-|- mensalidadeSugerida
-|- exercicios : Exercicio[]
-|- adicionarExercicio()
-|- cloneParaCliente()
-
-Exercicio
-|- id
-|- nome
-|- series
-|- repeticoes
-|- descansoSegundos
-|- notas
-
-Pagamento
-|- id
-|- clienteId
-|- valor
-|- vencimento
-|- pagoEm
-|- metodo
-|- estado
-
-Ginasio
-|- clientes : Cliente[]
-|- instrutores : Instrutor[]
-|- planosTreino : PlanoTreino[]
-|- pagamentos : Pagamento[]
-|- totalRecebido
-|- clientesEmAtraso
-```
-
-As relações entre as classes podem ser resumidas do seguinte modo:
-
-- `Cliente` e `Instrutor` herdam de `Pessoa`.
-- `Cliente` pode ter um `PlanoTreino` associado.
-- `PlanoTreino` pode ter vários `Exercicio`.
-- `Pagamento` está associado a `Cliente` através do identificador do cliente.
-- `Ginasio` representa, ao nível conceptual, a entidade que gere as listas de clientes, instrutores, planos e pagamentos.
-
-Embora a classe `Ginasio` não exista explicitamente com esse nome no código final, essa responsabilidade é desempenhada pela combinação entre o repositório e o serviço da aplicação.
-
-## 5. Conceitos de Programação Orientada a Objetos
-
-No projeto foram aplicados vários conceitos de Programação Orientada a Objetos:
-
-- **Classes**  
-  Foram criadas classes para representar as entidades do domínio, como `Pessoa`, `Cliente`, `Instrutor`, `PlanoTreino`, `Exercicio` e `Pagamento`.
-
-- **Objetos**  
-  Cada cliente, instrutor, plano ou pagamento existente na aplicação corresponde a um objeto concreto criado a partir das respetivas classes.
-
-- **Encapsulamento**  
-  Os atributos privados, definidos com `#`, protegem o estado interno dos objetos e obrigam ao uso de métodos de acesso controlados.
-
-- **Herança**  
-  `Cliente` e `Instrutor` reutilizam comportamento comum da classe `Pessoa`, evitando repetição de código.
-
-- **Composição**  
-  Um `PlanoTreino` contém vários `Exercicio`, e um `Cliente` pode conter um `PlanoTreino` associado. Esta relação mostra a construção de objetos mais complexos a partir de objetos mais simples.
-
-- **Métodos**  
-  Cada classe possui métodos próprios, como `mostrarInfo()`, `associarPlano()`, `adicionarExercicio()` e `toJSON()`, que encapsulam o comportamento esperado.
-
-- **Listas/arrays**  
-  O sistema utiliza arrays para armazenar coleções de clientes, instrutores, planos e pagamentos, tanto na memória como na persistência em `localStorage`.
-
-## 6. Conclusão e Reflexão Técnica
-
-O desenvolvimento do `FitManager` permitiu consolidar conhecimentos de modelação orientada a objetos, manipulação do DOM, persistência local e organização de código em JavaScript. Ao longo do projeto foi possível perceber a importância de separar claramente o modelo de dados, as regras de negócio e a interface, de forma a tornar a aplicação mais compreensível e mais fácil de manter.
-
-Uma das principais dificuldades esteve relacionada com a gestão consistente do estado da aplicação, sobretudo na sincronização entre os dados guardados, os formulários e o dashboard. Outra dificuldade relevante foi estruturar o código de forma a manter a simplicidade da interface sem perder clareza na lógica interna.
-
-Do ponto de vista técnico, o projeto demonstrou que mesmo uma aplicação sem base de dados externa pode beneficiar de uma arquitetura cuidada e de boas práticas de POO. Também mostrou a utilidade do `localStorage` como solução simples para persistência em projetos académicos e protótipos funcionais.
-
-## 7. Melhorias Futuras
-
-Como evolução futura do projeto, destacam-se as seguintes possibilidades:
-
-- Implementação de login de administrador.
-- Integração com uma base de dados real.
-- Criação de uma versão mobile mais otimizada.
-- Geração de relatórios em PDF.
-- Inclusão de um calendário de treinos e marcações.
-- Sistema de notificações para pagamentos e renovações.
-- Funcionalidades completas de edição e remoção em todas as entidades.
-- Gestão de permissões por tipo de utilizador.
+Esta versão mantém a simplicidade necessária para um projeto académico, ao mesmo tempo que fortalece a usabilidade e a organização da informação.
